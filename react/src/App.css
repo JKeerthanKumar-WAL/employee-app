@@ -1,0 +1,63 @@
+.App {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  line-height: 60px;
+}
+.container-fluid {
+  margin: auto;
+}
+.subHeading {
+  font-size: large;
+  font-weight: bold;
+}
+h1 {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: darkblue;
+  /* text-align: center; */
+}
+.showImg {
+  width: 100%;
+  height: 300px;
+  border-radius: 5px;
+  display: flex;
+}
+.employee {
+  background-color: pink;
+}
+.log {
+  background-image: linear-gradient(lightskyblue, lightgrey);
+}
+.modal-update,
+.modal-body {
+  line-height: 20px;
+}
+.card-body {
+  line-height: 40px;
+}
+.displayInflex {
+  display: inline-flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.Link-div {
+  display: none;
+}
+.card {
+  height: auto;
+  width: auto;
+  max-width: 350px;
+  margin: 30px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: 3px 6px 10px 3px darkolivegreen;
+}
+.card-body {
+  font-size: large;
+  text-align: left;
+}
+.card-button {
+  padding-top: 50px;
+}
+.login-div {
+  margin-left: 700px;
+}
