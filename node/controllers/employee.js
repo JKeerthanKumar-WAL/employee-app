@@ -35,14 +35,14 @@ const upload = multer({
 exports.getEmployees = [
   authenticationMiddleware,
   async (req, res) => {
-    await employeeModel
-      .findAll({ include: departmentModel })
-      .then((employee) => {
-        res.status(200).json(employee);
-      }),
-      (err) => {
-        res.status(500).json(err);
-      };
+    try {
+      const employee = await employeeModel.findAll({
+        include: departmentModel,
+      });
+      res.status(200).json(employee);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 ];
 exports.createEmployee = [
@@ -128,16 +128,16 @@ exports.createEmployee = [
 exports.deleteEmployee = [
   authenticationMiddleware,
   async (req, res) => {
-    await employeeModel
-      .destroy({ where: { id: req.params.id } })
-      .then((employee) => {
-        res
-          .status(200)
-          .json({ status: 1, debug_data: "Deleted employee details" });
-      }),
-      (err) => {
-        res.status(500).json(err);
-      };
+    try {
+      const employee = await employeeModel.destroy({
+        where: { id: req.params.id },
+      });
+      res
+        .status(200)
+        .json({ status: 1, debug_data: "Deleted employee details" });
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 ];
 exports.updateEmployee = [
@@ -148,7 +148,7 @@ exports.updateEmployee = [
     .notEmpty()
     .withMessage("Employee name is required")
     .isLength({ min: 3 })
-    .withMessage("Lenth of the name should be atleast 3 characters")
+    .withMessage("Length of the name should be atleast 3 characters")
     .isAlpha()
     .withMessage("Only alphabets are allowed"),
   body("email")
@@ -230,13 +230,13 @@ exports.updateEmployee = [
 exports.getEmployeeById = [
   authenticationMiddleware,
   async (req, res) => {
-    await employeeModel
-      .findOne({ where: { id: req.params.id } })
-      .then((employee) => {
-        res.status(200).json(employee);
-      }),
-      (err) => {
-        res.status(500).json(err);
-      };
+    try {
+      const employee = await employeeModel.findOne({
+        where: { id: req.params.id },
+      });
+      res.status(200).json(employee);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 ];

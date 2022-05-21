@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
 const AddEmployee = () => {
@@ -13,19 +13,18 @@ const AddEmployee = () => {
   let getToken = localStorage.getItem('token');
   getToken = getToken.replace('"', '');
   getToken = getToken.replace('"', '');
+  //Departments are seeded in the backend
   const getDepartment = async () => {
-    await axios
-      .get('/department', {
+    try {
+      const res = await axios.get('/department', {
         headers: {
           token: getToken,
         },
-      })
-      .then((res) => {
-        setDepartment(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      setDepartment(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     getDepartment();
@@ -49,26 +48,21 @@ const AddEmployee = () => {
       formData.append('employeeId', values.employeeId);
       formData.append('departmentId', values.departmentId);
       formData.append('status', values.status);
-      await axios
-        .post('/employee', formData, {
+      try {
+        const res = await axios.post('/employee', formData, {
           headers: {
             token: getToken,
           },
-        })
-        .then((res) => {
-          console.log(res.data);
-          showAdd();
-          navigate('/employee');
-          alert('Employee Details are added');
-          location.reload();
-        })
-        .catch((err) => {
-          alert(
-            'Failed to add a new employee as the email id is already exists'
-          );
-          showAdd();
-          console.log(err);
         });
+        console.log(res.data);
+        showAdd();
+        location.reload();
+        alert('Employee Details are added');
+      } catch (err) {
+        alert('Failed to add a new employee as the email id is already exists');
+        showAdd();
+        console.log(err);
+      }
     },
     validate() {
       const errors = {};
@@ -88,7 +82,7 @@ const AddEmployee = () => {
   const clearAll = () => {
     localStorage.clear();
     alert('Logged out succesfully');
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -96,15 +90,12 @@ const AddEmployee = () => {
       <h1 className="row pt-3">
         <span className="col">Displaying Employees</span>
         <span className="col">
-          <button className="btn btn-outline-success" onClick={showAdd}>
+          <button className="btn btn-success" onClick={showAdd}>
             Add Employee
           </button>
         </span>
         <span className="col pl-5">
-          <button
-            className="btn btn-outline-primary logout "
-            onClick={clearAll}
-          >
+          <button className="btn btn-danger logout " onClick={clearAll}>
             <b>Log Out</b>
           </button>
         </span>
@@ -195,7 +186,7 @@ const AddEmployee = () => {
                 <option value="Inactive">Inactive</option>
               </select>
               <ModalFooter>
-                <button className="btn btn-danger">Add</button>
+                <button className="btn btn-success">Add</button>
               </ModalFooter>
             </form>
           </div>

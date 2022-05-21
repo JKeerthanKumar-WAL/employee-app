@@ -10,14 +10,13 @@ const Login = () => {
   const [token, setToken] = useLocalStorage('token', '');
   const navigate = useNavigate();
   const getUsers = async () => {
-    await axios
-      .get('/usersql')
-      .then((res) => {
-        setDetails(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const res = await axios.get('/usersql');
+      setDetails(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     getUsers();
@@ -30,48 +29,45 @@ const Login = () => {
       email: event.target.email.value,
       password: event.target.password.value,
     };
-    await axios
-      .post('/usersql', userObject)
-      .then((res) => {
-        console.log(res.data);
-        alert('Registered successfully');
-        getUsers();
-      })
-      .catch((err) => {
-        alert('Registration unsuccessful. Enter unique username.');
-        console.log(err);
-      });
+    try {
+      const res = await axios.post('/usersql', userObject);
+      console.log(res.data);
+      alert('Registered successfully');
+      setLogin(false);
+      getUsers();
+    } catch (err) {
+      alert('Registration unsuccessful. Enter unique username.');
+      console.log(err);
+    }
   };
   const loginForm = () => {
     setLogin(true);
   };
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
     },
     async onSubmit(values) {
       let userObject = {
-        username: values.username,
+        email: values.email,
         password: values.password,
       };
-      await axios
-        .post(`/usersql/login`, userObject)
-        .then((res) => {
-          setLogin(false);
-          setToken(res.data.token);
-          alert('Login successful');
-          navigate('/employee');
-        })
-        .catch((err) => {
-          alert('Login failed. Enter username and password correctly.');
-          console.log(err);
-        });
+      try {
+        const res = await axios.post(`/usersql/login`, userObject);
+        setLogin(false);
+        setToken(res.data.token);
+        alert('Login successful');
+        navigate('/employee');
+      } catch (err) {
+        alert('Login failed. Enter email id and password correctly.');
+        console.log(err);
+      }
     },
     validate() {
       const errors = {};
-      if (formik.values.username.length < 3) {
-        errors.username = 'Length of name must be atleast three characters';
+      if (formik.values.email.length < 5) {
+        errors.email = 'Length of email must be atleast five characters';
       }
       if (formik.values.password.length < 5) {
         errors.password = 'Length of email must be atleast five characters';
@@ -82,43 +78,6 @@ const Login = () => {
   return (
     <div className="container-fluid log text-center w-50">
       {login ? (
-        <div>
-          <h1 className="mt-3 pt-3">Log In</h1>
-          <form
-            className="form-group"
-            onSubmit={formik.handleSubmit}
-            noValidate
-          >
-            <label className="subHeading">Username : </label>
-            <input
-              className="form-control d-inline-flex w-50"
-              type="text"
-              name="username"
-              placeholder="Enter Username"
-              onChange={formik.handleChange}
-              value={formik.values.username}
-            />
-            <div className="text-danger">
-              {formik.errors.username ? formik.errors.username : null}
-            </div>
-            <label className="subHeading">Password : </label>
-            <input
-              className="form-control d-inline-flex w-50"
-              type="password"
-              name="password"
-              placeholder="Enter Password"
-              onChange={formik.handleChange}
-              value={formik.values.password}
-            />
-            <div className="text-danger">
-              {formik.errors.password ? formik.errors.password : null}
-            </div>
-            <button className="btn btn-outline-primary">
-              <b>Log In</b>
-            </button>
-          </form>
-        </div>
-      ) : (
         <div>
           <h1 className="mt-3 pt-3">Registration</h1>
           <form className="form-group" onSubmit={createUser}>
@@ -154,11 +113,56 @@ const Login = () => {
               placeholder="Enter Password"
             />
             <br />
-            <button className="btn btn-outline-primary">
+            <button className="btn btn-primary">
               <b>Register</b>
             </button>
           </form>
-          <button className="btn btn-outline-primary" onClick={loginForm}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setLogin(false);
+            }}
+          >
+            <b>Go Back</b>
+          </button>
+        </div>
+      ) : (
+        <div>
+          <h1 className="mt-5 pt-3">Log In</h1>
+          <form
+            className="form-group"
+            onSubmit={formik.handleSubmit}
+            noValidate
+          >
+            <label className="subHeading">Email Id : </label>
+            <input
+              className="form-control d-inline-flex w-50"
+              type="email"
+              name="email"
+              placeholder="Enter Email Id"
+              onChange={formik.handleChange}
+              value={formik.values.email}
+            />
+            <div className="text-danger">
+              {formik.errors.email ? formik.errors.email : null}
+            </div>
+            <label className="subHeading">Password : </label>
+            <input
+              className="form-control d-inline-flex w-50"
+              type="password"
+              name="password"
+              placeholder="Enter Password"
+              onChange={formik.handleChange}
+              value={formik.values.password}
+            />
+            <div className="text-danger">
+              {formik.errors.password ? formik.errors.password : null}
+            </div>
+            <button className="btn btn-primary">
+              <b>Log In</b>
+            </button>
+          </form>
+          <button className="btn btn-secondary" onClick={loginForm}>
             <b>Sign Up</b>
           </button>
         </div>

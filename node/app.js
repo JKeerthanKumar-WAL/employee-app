@@ -1,9 +1,9 @@
 var createError = require("http-errors");
 var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const path = require("path");
 const cors = require("cors");
+const cron = require("node-cron");
+const employeeModel = require("./models").Employee;
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -13,19 +13,17 @@ var employeeRouter = require("./routes/employee");
 
 var app = express();
 app.use(cors());
-/* app.use((req, res, next) => {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
-}); */
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
@@ -48,6 +46,15 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+
+//Bonus Task :- Deleting inactive employees at 8PM
+//schedule * * * * *
+//If schedule is 11111 then it means
+//The five ones depicts minute - hour - day(month) - month - day(week) respectively
+// * 20 * * * ->Here 20 represents 8 pm.
+cron.schedule("* 20 * * * ", async () => {
+  await employeeModel.destroy({ where: { status: "Inactive" } });
 });
 
 module.exports = app;

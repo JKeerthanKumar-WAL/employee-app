@@ -23,33 +23,30 @@ const Employee = () => {
   getToken = getToken.replace('"', '');
   getToken = getToken.replace('"', '');
   const getEmployees = async () => {
-    await axios
-      .get('/employee', {
+    try {
+      const res = await axios.get('/employee', {
         headers: {
           token: getToken,
         },
-      })
-      .then((res) => {
-        setEmployeeInfo(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      setEmployeeInfo(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
+  //Departments are seeded in the backend
   const getDepartment = async () => {
-    await axios
-      .get('/department', {
+    try {
+      const res = await axios.get('/department', {
         headers: {
           token: getToken,
         },
-      })
-      .then((res) => {
-        setDepartment(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      setDepartment(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     getEmployees();
@@ -83,45 +80,39 @@ const Employee = () => {
     formData.append('employeeId', updateId);
     formData.append('departmentId', updateDepartmentId);
     formData.append('status', updateStatus);
-    await axios
-      .put(`/employee/${saveEmployee}`, formData, {
+    try {
+      const res = await axios.put(`/employee/${saveEmployee}`, formData, {
         headers: {
           token: getToken,
         },
-      })
-      .then((res) => {
-        console.log(res.data);
-        showUpdate();
-        alert('Employee Details are updated.');
-        location.reload();
-      })
-      .catch((err) => {
-        alert(
-          'Failed to update. Fill all the columns and enter a new email id'
-        );
-        showUpdate();
-        console.log(err);
       });
+      console.log(res.data);
+      showUpdate();
+      getEmployees();
+      alert('Employee Details are updated.');
+    } catch (err) {
+      alert('Failed to update. Fill all the columns and enter a new email id');
+      showUpdate();
+      console.log(err);
+    }
   };
   const deleteDetail = (id) => {
     setDel(id);
     showDelete();
   };
   const deleteEmployee = async () => {
-    await axios
-      .delete(`/employee/${del}`, {
+    try {
+      const res = await axios.delete(`/employee/${del}`, {
         headers: {
           token: getToken,
         },
-      })
-      .then((res) => {
-        showDelete();
-        alert(`Employee card is deleted`);
-        location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      showDelete();
+      getEmployees();
+      alert(`Employee card is deleted`);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="container-fluid employee">
@@ -249,7 +240,10 @@ const Employee = () => {
                     <Button className="btn btn-secondary" onClick={showUpdate}>
                       Close
                     </Button>
-                    <Button className="btn btn-danger" onClick={updateEmployee}>
+                    <Button
+                      className="btn btn-success"
+                      onClick={updateEmployee}
+                    >
                       Update
                     </Button>
                   </ModalFooter>
