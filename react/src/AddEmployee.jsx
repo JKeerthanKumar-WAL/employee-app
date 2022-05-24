@@ -117,7 +117,6 @@ const AddEmployee = () => {
                 name="name"
                 placeholder="Enter Name"
                 onChange={formik.handleChange}
-                value={formik.values.name}
               />
               <div className="text-danger">
                 {formik.errors.name ? formik.errors.name : null}
@@ -131,7 +130,6 @@ const AddEmployee = () => {
                 name="email"
                 placeholder="Enter Email Id"
                 onChange={formik.handleChange}
-                value={formik.values.email}
               />
               <div className="text-danger">
                 {formik.errors.email ? formik.errors.email : null}
@@ -155,7 +153,6 @@ const AddEmployee = () => {
                 name="employeeId"
                 placeholder="Enter Employee Id"
                 onChange={formik.handleChange}
-                value={formik.values.employeeId}
               />
               <div className="text-danger">
                 {formik.errors.employeeId ? formik.errors.employeeId : null}
@@ -166,7 +163,6 @@ const AddEmployee = () => {
                 className="form-control"
                 name="departmentId"
                 onChange={formik.handleChange}
-                value={formik.values.departmentId}
               >
                 <option selected>Select</option>
                 {department.map((val) => {
@@ -179,7 +175,6 @@ const AddEmployee = () => {
                 className="form-control"
                 name="status"
                 onChange={formik.handleChange}
-                value={formik.values.status}
               >
                 <option selected> Select </option>
                 <option value="Active">Active</option>
